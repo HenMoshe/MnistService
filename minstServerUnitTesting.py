@@ -46,14 +46,8 @@ class MnistServiceServicerTest(unittest.TestCase):
 
     def testClientRequests(self):
         try:
-            # Create a mock request
-            mockRequest = minstServiceProto_pb2.DataRequest()
-
-            # Directly call the GetTrainingSamples method of the service
-            responses = self.service.GetTrainingSamples(mockRequest, None)
-
-            # Validate the responses
-            self.assertTrue(list(responses), "Expected non-empty response list.")
+            responses = list(self.service.GetTrainingSamples(minstServiceProto_pb2.DataRequest(), None))
+            self.assertTrue(responses, "Expected non-empty response list.")
         except Exception as e:
             self.fail(f"testClientRequests raised an exception: {e}")               
 
@@ -68,8 +62,7 @@ class MnistServiceServicerTest(unittest.TestCase):
 
     def testTrainingSamplesWithAllData(self):
         try:
-            request = minstServiceProto_pb2.DataRequest(numOfSamples=0)  # Assuming 0 means all data
-            responses = list(self.service.GetTrainingSamples(request, None))
+            responses = self.responses #assuming no numofsamples param to return full
             self.assertEqual(len(responses), len(self.service.train_images), "Should return all samples.")
         except Exception as e:
             self.fail(f"testTrainingSamplesWithAllData raised an exception: {e}")     
