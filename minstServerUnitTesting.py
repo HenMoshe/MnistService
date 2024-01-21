@@ -33,7 +33,7 @@ class MnistServiceServicerTest(unittest.TestCase):
     @patch('minstServer.tensorflow')
     def testGetTrainingSamplesFormat(self, mock_tf):
         try: 
-            responses = list(self.service.GetTrainingSamples(minstServiceProto_pb2.DataRequest(), None))
+            responses = self.responses
             self.assertTrue(responses, "The service should return a non-empty response.")
             for response in responses:
                 self.assertIsInstance(
