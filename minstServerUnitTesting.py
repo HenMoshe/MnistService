@@ -9,6 +9,7 @@ class MnistServiceServicerTest(unittest.TestCase):
 
     def setUp(self):
         self.service = minstServer.MnistServiceServicer()
+        self.responses = list(self.service.GetTrainingSamples(minstServiceProto_pb2.DataRequest(), None))
         self.server = grpc_testing.server_from_dictionary(
             {
                 minstServiceProto_pb2.DESCRIPTOR.services_by_name['MnistService'] : minstServer.MnistServiceServicer()
@@ -24,7 +25,7 @@ class MnistServiceServicerTest(unittest.TestCase):
 
     def testGetTrainingSamplesResponse(self):
         try:
-            responses = list(self.service.GetTrainingSamples(minstServiceProto_pb2.DataRequest(), None))
+            responses = self.responses
             self.assertTrue(responses, "The service should return a non-empty response.")
         except Exception as e:
             self.fail(f"GetTrainingSamples_BasicResponse raised an exception: {e}")
