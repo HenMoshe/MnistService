@@ -62,7 +62,7 @@ class MnistServiceServicerTest(unittest.TestCase):
 
     def testTrainingSamplesWithAllData(self):
         try:
-            responses = self.responses #assuming no numofsamples param to return full
+            responses = self.responses #assuming no numofsamples param to return full list
             self.assertEqual(len(responses), len(self.service.train_images), "Should return all samples.")
         except Exception as e:
             self.fail(f"testTrainingSamplesWithAllData raised an exception: {e}")     
@@ -72,11 +72,11 @@ class ServerStartupTest(unittest.TestCase):
     
     def testServerStartup(self):
         try:
-            server = serve(waitForTermination = False)
+            server = serve(waitForTermination=False)
             self.assertIsNotNone(server, "server failed to start up")
         except Exception as e:
             print(f"testServerStartup failed.{e}")
-            self.fail(f"server Startup had a problem")
+            self.fail(f"server Startup had a problem{e}")
 
 
 if __name__ == '__main__':
