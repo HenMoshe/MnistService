@@ -9,6 +9,7 @@ class MnistServiceServicerTest(unittest.TestCase):
 
     def setUp(self):
         self.service = minstServer.MnistServiceServicer()
+        self.responses = list(self.service.GetTrainingSamples(minstServiceProto_pb2.DataRequest(), None))
         self.server = grpc_testing.server_from_dictionary(
             {
                 minstServiceProto_pb2.DESCRIPTOR.services_by_name['MnistService'] : minstServer.MnistServiceServicer()
@@ -24,7 +25,7 @@ class MnistServiceServicerTest(unittest.TestCase):
 
     def testGetTrainingSamplesResponse(self):
         try:
-            responses = list(self.service.GetTrainingSamples(minstServiceProto_pb2.DataRequest(), None))
+            responses = self.responses
             self.assertTrue(responses, "The service should return a non-empty response.")
         except Exception as e:
             self.fail(f"GetTrainingSamples_BasicResponse raised an exception: {e}")
@@ -32,7 +33,7 @@ class MnistServiceServicerTest(unittest.TestCase):
     @patch('minstServer.tensorflow')
     def testGetTrainingSamplesFormat(self, mock_tf):
         try: 
-            responses = list(self.service.GetTrainingSamples(minstServiceProto_pb2.DataRequest(), None))
+            responses = self.responses
             self.assertTrue(responses, "The service should return a non-empty response.")
             for response in responses:
                 self.assertIsInstance(
@@ -45,14 +46,8 @@ class MnistServiceServicerTest(unittest.TestCase):
 
     def testClientRequests(self):
         try:
-            # Create a mock request
-            mockRequest = minstServiceProto_pb2.DataRequest()
-
-            # Directly call the GetTrainingSamples method of the service
-            responses = self.service.GetTrainingSamples(mockRequest, None)
-
-            # Validate the responses
-            self.assertTrue(list(responses), "Expected non-empty response list.")
+            responses = list(self.service.GetTrainingSamples(minstServiceProto_pb2.DataRequest(), None))
+            self.assertTrue(responses, "Expected non-empty response list.")
         except Exception as e:
             self.fail(f"testClientRequests raised an exception: {e}")               
 
@@ -67,8 +62,7 @@ class MnistServiceServicerTest(unittest.TestCase):
 
     def testTrainingSamplesWithAllData(self):
         try:
-            request = minstServiceProto_pb2.DataRequest(numOfSamples=0)  # Assuming 0 means all data
-            responses = list(self.service.GetTrainingSamples(request, None))
+            responses = self.responses #assuming no numofsamples param to return full list
             self.assertEqual(len(responses), len(self.service.train_images), "Should return all samples.")
         except Exception as e:
             self.fail(f"testTrainingSamplesWithAllData raised an exception: {e}")     
@@ -78,11 +72,11 @@ class ServerStartupTest(unittest.TestCase):
     
     def testServerStartup(self):
         try:
-            server = serve(waitForTermination = False)
+            server = serve(waitForTermination=False)
             self.assertIsNotNone(server, "server failed to start up")
         except Exception as e:
             print(f"testServerStartup failed.{e}")
-            self.fail(f"server Startup had a problem")
+            self.fail(f"server Startup had a problem{e}")
 
 
 if __name__ == '__main__':
