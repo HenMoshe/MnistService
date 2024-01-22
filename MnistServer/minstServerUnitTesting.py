@@ -1,10 +1,8 @@
 import unittest
 from unittest.mock import patch
 from MnistServer import minstServer
-import grpc_testing
-#from minstServiceProto_pb2_grpc import 
+import grpc_testing 
 from minstServiceProto_pb2 import Sample, DataRequest
-#from mnistServerRun import serve
 
 class MnistServiceServicerTest(unittest.TestCase):
 
@@ -75,22 +73,4 @@ def runServerUnitTesting():
 
 
 
-""" 
-
-class ServerStartupTest(unittest.TestCase):
-    
-    def testServerStartup(self):
-        try:
-            server = serve(waitForTermination=False)
-            self.assertIsNotNone(server, "server failed to start up")
-        except Exception as e:
-            print(f"testServerStartup failed.{e}")
-            self.fail(f"server Startup had a problem{e}")
-
-if __name__ == '__main__':
-    unittest.main(verbosity=2)
-    
- """    
-    
-    
     
