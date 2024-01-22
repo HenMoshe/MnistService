@@ -1,10 +1,9 @@
 import unittest
-import minstClient
-import minstServiceProto_pb2
+from MnistClient import minstClient
+from minstServiceProto_pb2 import DataRequest, Sample
 import grpc
 import io
 from unittest.mock import patch
-from MnistClientRun import main
 
 class MnistClientTest(unittest.TestCase):
     def setUp(self):
@@ -37,7 +36,7 @@ class MnistClientTest(unittest.TestCase):
         try:
             responses = list(self.client.getMnistData(1))
             for response in responses:
-                self.assertIsInstance(response, minstServiceProto_pb2.Sample, "Response should be of type Sample.")
+                self.assertIsInstance(response, Sample, "Response should be of type Sample.")
                 # Further checks can be added based on the expected data structure
         except Exception as e:
             self.fail(f"Receiving data failed: {e}")
@@ -52,6 +51,10 @@ class MnistClientTest(unittest.TestCase):
         except Exception as e:
             self.fail(f"Unexpected exception type: {e}")
 
-
-if __name__ == '__main__':
-    unittest.main(verbosity=2)
+def runClientUnitTesting():
+    testSuite = unittest.TestSuite()
+    testLoader = unittest.TestLoader()
+    testsLoaded = testLoader.loadTestsFromTestCase(MnistClientTest)
+    testSuite.addTests(testsLoaded)
+    testRunner = unittest.TextTestRunner(verbosity=2)
+    testRunner.run(testSuite)

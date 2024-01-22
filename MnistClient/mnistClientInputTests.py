@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
-from MnistClientRun import getUserInput, processUserInput
-from minstClient import MnistClient
+from .InputFunctions import getUserInput, processUserInput
+from .minstClient import MnistClient
 
 class TestGetUserInput(unittest.TestCase):
     
@@ -41,5 +41,8 @@ class TestGetUserInput(unittest.TestCase):
         except Exception as e:
             self.fail(f"Problem in processing user input number {e}")
 
-if __name__ == '__main__':
-    unittest.main(verbosity=2)        
+def runClientInputTests():
+    testLoader = unittest.TestLoader()
+    testSuite = testLoader.loadTestsFromTestCase(TestGetUserInput)
+    testRunner = unittest.TextTestRunner(verbosity=2)
+    testRunner.run(testSuite)
