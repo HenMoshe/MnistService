@@ -1,21 +1,17 @@
 import unittest
 from unittest.mock import patch
-import minstServer 
+from MnistServer import minstServer
 import grpc_testing
-import minstServiceProto_pb2, minstServiceProto_pb2_grpc
-from mnistServerRun import serve
+#from minstServiceProto_pb2_grpc import 
+from minstServiceProto_pb2 import Sample, DataRequest
+#from mnistServerRun import serve
 
 class MnistServiceServicerTest(unittest.TestCase):
 
     def setUp(self):
         self.service = minstServer.MnistServiceServicer()
-        self.responses = list(self.service.GetTrainingSamples(minstServiceProto_pb2.DataRequest(), None))
-        self.server = grpc_testing.server_from_dictionary(
-            {
-                minstServiceProto_pb2.DESCRIPTOR.services_by_name['MnistService'] : minstServer.MnistServiceServicer()
-            }, 
-            grpc_testing.strict_real_time()
-        )
+        self.responses = list(self.service.GetTrainingSamples(DataRequest(), None))
+        
     def testServerLoadingMnistDataAfterStartup(self):
         try:
             (train_images, train_labels) = self.service.loadMnistData()
@@ -30,14 +26,14 @@ class MnistServiceServicerTest(unittest.TestCase):
         except Exception as e:
             self.fail(f"GetTrainingSamples_BasicResponse raised an exception: {e}")
 
-    @patch('minstServer.tensorflow')
+    @patch('MnistServer.minstServer.tensorflow')
     def testGetTrainingSamplesFormat(self, mock_tf):
         try: 
             responses = self.responses
             self.assertTrue(responses, "The service should return a non-empty response.")
             for response in responses:
                 self.assertIsInstance(
-                    response, minstServiceProto_pb2.Sample, 
+                    response, Sample, 
                     f"Expected response type to be mnistServiceProto_pb2.Sample, got {type(response)} instead."
                     )
         except Exception as e:
@@ -46,7 +42,7 @@ class MnistServiceServicerTest(unittest.TestCase):
 
     def testClientRequests(self):
         try:
-            responses = list(self.service.GetTrainingSamples(minstServiceProto_pb2.DataRequest(), None))
+            responses = list(self.service.GetTrainingSamples(DataRequest(), None))
             self.assertTrue(responses, "Expected non-empty response list.")
         except Exception as e:
             self.fail(f"testClientRequests raised an exception: {e}")               
@@ -54,7 +50,7 @@ class MnistServiceServicerTest(unittest.TestCase):
 
     def testTrainingSamplesWithSpecificNumber(self):
         try:
-            request = minstServiceProto_pb2.DataRequest(numOfSamples=10)
+            request = DataRequest(numOfSamples=10)
             responses = list(self.service.GetTrainingSamples(request, None))
             self.assertEqual(len(responses), 10, "Should return exactly 10 samples.")
         except Exception as e:
@@ -65,8 +61,21 @@ class MnistServiceServicerTest(unittest.TestCase):
             responses = self.responses #assuming no numofsamples param to return full list
             self.assertEqual(len(responses), len(self.service.train_images), "Should return all samples.")
         except Exception as e:
-            self.fail(f"testTrainingSamplesWithAllData raised an exception: {e}")     
+            self.fail(f"testTrainingSamplesWithAllData raised an exception: {e}")  
 
+
+
+
+def runServerUnitTesting():
+    testLoader = unittest.TestLoader()
+    suite1 = testLoader.loadTestsFromTestCase(MnistServiceServicerTest)
+    testSuite = unittest.TestSuite(suite1)
+    testRunner = unittest.TextTestRunner(verbosity=2)
+    testRunner.run(testSuite)
+
+
+
+""" 
 
 class ServerStartupTest(unittest.TestCase):
     
@@ -78,11 +87,10 @@ class ServerStartupTest(unittest.TestCase):
             print(f"testServerStartup failed.{e}")
             self.fail(f"server Startup had a problem{e}")
 
-
 if __name__ == '__main__':
     unittest.main(verbosity=2)
     
-    
+ """    
     
     
     
