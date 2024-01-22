@@ -2,10 +2,11 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 import grpc
 import time
+from minstServiceProto_pb2 import DataRequest, Sample
+from minstServiceProto_pb2_grpc import MnistServiceStub, add_MnistServiceServicer_to_server, MnistServiceServicer
 from concurrent import futures
 import tensorflow
-from minstServiceProto_pb2_grpc import MnistServiceStub, add_MnistServiceServicer_to_server, MnistServiceServicer
-from minstServiceProto_pb2 import DataRequest, Sample
+
 
 class MnistServiceServicer(MnistServiceServicer):
     def __init__(self):
