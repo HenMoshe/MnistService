@@ -2,11 +2,13 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 import grpc
 import time
+from minstServiceProto_pb2 import DataRequest, Sample
+from minstServiceProto_pb2_grpc import MnistServiceStub, add_MnistServiceServicer_to_server, MnistServiceServicer
 from concurrent import futures
 import tensorflow
-import minstServiceProto_pb2, minstServiceProto_pb2_grpc
 
-class MnistServiceServicer(minstServiceProto_pb2_grpc.MnistServiceServicer):
+
+class MnistServiceServicer(MnistServiceServicer):
     def __init__(self):
         logging.info("Initializing MNIST Service Servicer")
         (self.train_images, self.train_labels) = self.loadMnistData()
@@ -14,7 +16,7 @@ class MnistServiceServicer(minstServiceProto_pb2_grpc.MnistServiceServicer):
     def startServer(self, waitForTermination=True):
         try:
             server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-            minstServiceProto_pb2_grpc.add_MnistServiceServicer_to_server(self, server)
+            add_MnistServiceServicer_to_server(self, server)
             server.add_insecure_port('[::]:50051')
             server.start()
             if waitForTermination:
@@ -39,7 +41,7 @@ class MnistServiceServicer(minstServiceProto_pb2_grpc.MnistServiceServicer):
             numOfSamples = request.numOfSamples if request.numOfSamples and request.numOfSamples > 0 else len(self.train_images)
             for image, label in zip(self.train_images[:numOfSamples], self.train_labels[:numOfSamples]):
                 image_bytes = image.tobytes() 
-                yield minstServiceProto_pb2.Sample(image=image_bytes, label=label)
+                yield Sample(image=image_bytes, label=label)
                 # should we add compression?
                 #print(f'sent sample with label: {label}')
         except Exception as e:
