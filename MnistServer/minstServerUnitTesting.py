@@ -63,14 +63,8 @@ class MnistServiceServicerTest(unittest.TestCase):
 
 
 
-
-def runServerUnitTesting():
-    testLoader = unittest.TestLoader()
-    suite1 = testLoader.loadTestsFromTestCase(MnistServiceServicerTest)
-    testSuite = unittest.TestSuite(suite1)
-    testRunner = unittest.TextTestRunner(verbosity=2)
-    testRunner.run(testSuite)
-
+if __name__ == '__main__':
+    unittest.main(verbosity=2)
 
 
     

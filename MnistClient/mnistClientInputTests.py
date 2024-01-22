@@ -41,8 +41,6 @@ class TestGetUserInput(unittest.TestCase):
         except Exception as e:
             self.fail(f"Problem in processing user input number {e}")
 
-def runClientInputTests():
-    testLoader = unittest.TestLoader()
-    testSuite = testLoader.loadTestsFromTestCase(TestGetUserInput)
-    testRunner = unittest.TextTestRunner(verbosity=2)
-    testRunner.run(testSuite)
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2)
