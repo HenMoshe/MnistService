@@ -1,17 +1,18 @@
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+from minstServiceProto_pb2_grpc import MnistServiceStub
+from minstServiceProto_pb2 import DataRequest
 import grpc
-import minstServiceProto_pb2, minstServiceProto_pb2_grpc
 import time
 
 class MnistClient:
     def __init__(self, serverAddress):
         self.channel = grpc.insecure_channel(serverAddress)
-        self.stub = minstServiceProto_pb2_grpc.MnistServiceStub(self.channel)
+        self.stub = MnistServiceStub(self.channel)
         
     def getMnistData(self, numOfSamples = 0):
         try:
-            dataRequest = minstServiceProto_pb2.DataRequest(numOfSamples=numOfSamples)
+            dataRequest = DataRequest(numOfSamples=numOfSamples)
             return self.stub.GetTrainingSamples(dataRequest)
         except Exception as e:
             logging.error("Error in getting data from server: %s", e)
