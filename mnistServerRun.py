@@ -1,5 +1,4 @@
 from MnistServer.minstServer import MnistServiceServicer
-from MnistServer.minstServerUnitTesting import runServerUnitTesting
 
 def serve(waitForTermination=True):
     mnistService = MnistServiceServicer()

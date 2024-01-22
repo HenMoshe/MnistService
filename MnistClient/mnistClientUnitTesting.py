@@ -51,10 +51,6 @@ class MnistClientTest(unittest.TestCase):
         except Exception as e:
             self.fail(f"Unexpected exception type: {e}")
 
-def runClientUnitTesting():
-    testSuite = unittest.TestSuite()
-    testLoader = unittest.TestLoader()
-    testsLoaded = testLoader.loadTestsFromTestCase(MnistClientTest)
-    testSuite.addTests(testsLoaded)
-    testRunner = unittest.TextTestRunner(verbosity=2)
-    testRunner.run(testSuite)
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2)
